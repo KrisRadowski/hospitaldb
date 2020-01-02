@@ -29,14 +29,6 @@ public class Team {
         this.teamEmployee2 = teamEmployee2;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public HospitalEmployee getTeamLeader() {
         return teamLeader;
     }
