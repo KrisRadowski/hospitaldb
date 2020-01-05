@@ -9,21 +9,17 @@ public class Team {
     @Column(name= "team_id")
     private Long id;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "employee_id")
     private HospitalEmployee teamLeader;
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "employee_id")
-    private HospitalEmployee teamEmployee1;
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "employee_id")
-    private HospitalEmployee teamEmployee2;
+    private Long teamEmployee1;
+    private Long teamEmployee2;
 
     public Team() {
 
     }
 
-    public Team(HospitalEmployee teamLeader, HospitalEmployee teamEmployee1, HospitalEmployee teamEmployee2) {
+    public Team(HospitalEmployee teamLeader, Long teamEmployee1, Long teamEmployee2) {
         this.teamLeader = teamLeader;
         this.teamEmployee1 = teamEmployee1;
         this.teamEmployee2 = teamEmployee2;
@@ -37,19 +33,19 @@ public class Team {
         this.teamLeader = teamLeader;
     }
 
-    public HospitalEmployee getTeamEmployee1() {
+    public Long getTeamEmployee1() {
         return teamEmployee1;
     }
 
-    public void setTeamEmployee1(HospitalEmployee teamEmployee1) {
+    public void setTeamEmployee1(Long teamEmployee1) {
         this.teamEmployee1 = teamEmployee1;
     }
 
-    public HospitalEmployee getTeamEmployee2() {
+    public Long getTeamEmployee2() {
         return teamEmployee2;
     }
 
-    public void setTeamEmployee2(HospitalEmployee teamEmployee2) {
+    public void setTeamEmployee2(Long teamEmployee2) {
         this.teamEmployee2 = teamEmployee2;
     }
 }
