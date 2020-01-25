@@ -29,7 +29,7 @@ public class HospitalDBUserService {
         this.employeeRepository = employeeRepository;
     }
 
-    public void addUser(HospitalDBUser user){
+    public void addUser(HospitalDBUser user,Position p){
         String passwordHash = passEncoder.encode(user.getPassword());
         user.setPassword(passwordHash);
         dbUserRepository.save(user);

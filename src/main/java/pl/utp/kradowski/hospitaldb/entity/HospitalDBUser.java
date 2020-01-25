@@ -24,11 +24,12 @@ public class HospitalDBUser {
     private boolean isPasswordNotExpired;
     private boolean isEnabled;
 
-    protected HospitalDBUser(){}
+    public HospitalDBUser(){}
 
-    public HospitalDBUser(String login, String password){
+    public HospitalDBUser(String login, String password,UserRole role){
         this.login = login;
         this.password = password;
+        this.role = role;
     }
 
     public Long getId(){

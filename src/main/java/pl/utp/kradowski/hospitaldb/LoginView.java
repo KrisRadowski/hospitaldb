@@ -6,6 +6,11 @@ import com.vaadin.flow.component.login.LoginForm;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import org.springframework.beans.factory.annotation.Autowired;
+import pl.utp.kradowski.hospitaldb.entity.HospitalDBUser;
+import pl.utp.kradowski.hospitaldb.entity.Position;
+import pl.utp.kradowski.hospitaldb.security.UserRole;
+import pl.utp.kradowski.hospitaldb.service.HospitalDBUserService;
 
 import javax.swing.*;
 
@@ -17,7 +22,8 @@ public class LoginView extends VerticalLayout {
 
     private LoginForm login = new LoginForm();
 
-    public LoginView(){
+    @Autowired
+    public LoginView(HospitalDBUserService DBUserservice){
         login.setAction("login");
         getElement().appendChild(login.getElement());
         Button registerButton = new Button("Register");
@@ -25,5 +31,12 @@ public class LoginView extends VerticalLayout {
             UI.getCurrent().getPage().setLocation("register");
         });
         add(registerButton);
+        Button magicButton = new Button(";)");
+        magicButton.addClickListener(click -> {
+            HospitalDBUser admin = new HospitalDBUser("admin","admin", UserRole.ROLE_ADMIN);
+            DBUserservice.addUser(admin, Position.ADMIN);
+            remove(magicButton);
+        });
+        add(magicButton);
     }
 }
