@@ -5,6 +5,7 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.server.ServiceInitEvent;
 import com.vaadin.flow.server.VaadinServiceInitListener;
 import org.springframework.stereotype.Component;
+import pl.utp.kradowski.hospitaldb.AccessDeniedView;
 import pl.utp.kradowski.hospitaldb.LoginView;
 
 @Component
@@ -18,9 +19,10 @@ public class ConfigureUIServiceInitListener implements VaadinServiceInitListener
     }
 
     private void beforeEnter(BeforeEnterEvent event) {
-        if(!LoginView.class.equals(event.getNavigationTarget())
-        &&!SecurityUtils.isUserLoggedIn()){
-            //event.rerouteTo(LoginView.class);
+        if(!SecurityUtils.isAccessGranted(event.getNavigationTarget())){
+            if(SecurityUtils.isUserLoggedIn())
+                event.rerouteTo(AccessDeniedView.class);
+            else event.rerouteTo(LoginView.class);
         }
     }
 }

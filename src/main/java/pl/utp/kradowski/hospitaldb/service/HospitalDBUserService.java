@@ -32,6 +32,10 @@ public class HospitalDBUserService {
     public void addUser(HospitalDBUser user,Position p){
         String passwordHash = passEncoder.encode(user.getPassword());
         user.setPassword(passwordHash);
+        user.setEnabled(true);
+        user.setNotLocked(true);
+        user.setAccountNotExpired(true);
+        user.setPasswordNotExpired(true);
         dbUserRepository.save(user);
     }
 }
