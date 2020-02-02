@@ -23,7 +23,7 @@ public class RegisterForm extends VerticalLayout {
     @Autowired
     public RegisterForm(HospitalDBUserService DBUserservice){
         TextField firstName = new TextField("First name: ");
-        TextField lastName = new TextField("Last name:: ");
+        TextField lastName = new TextField("Last name: ");
         TextField login = new TextField("Login: ");
         PasswordField password = new PasswordField("Password: ");
         add(firstName,lastName,login,password);
