@@ -18,6 +18,9 @@ public class AdminView extends HorizontalLayout {
         addHospital.addClickListener(click->{
             UI.getCurrent().getPage().setLocation("addHospital");
         });
+        addDepartment.addClickListener(click->{
+            UI.getCurrent().getPage().setLocation("addDepartment");
+        });
         add(addHospital,addDepartment);
     }
 }

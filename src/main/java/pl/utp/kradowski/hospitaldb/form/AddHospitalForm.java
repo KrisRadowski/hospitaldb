@@ -17,7 +17,7 @@ public class AddHospitalForm extends VerticalLayout {
     public AddHospitalForm(HospitalService hospitalService){
         TextField hospitalName = new TextField("Hospital name:");
         TextField street = new TextField("Street:");
-        TextField aptNumber = new TextField("?:");
+        TextField aptNumber = new TextField("Building number:");
         TextField city = new TextField("City:");
         TextField zipCode = new TextField("ZIP code:");
         TextField phoneNumber = new TextField("Phone number:");
