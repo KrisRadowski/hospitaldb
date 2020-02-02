@@ -8,6 +8,7 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import pl.utp.kradowski.hospitaldb.view.LoginView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
@@ -17,6 +18,10 @@ import java.util.stream.Stream;
 public final class SecurityUtils {
 
     public static  boolean isAccessGranted(Class<?> classToAccess){
+        if(LoginView.class.equals(classToAccess))
+            return true;
+        if(!isUserLoggedIn())
+            return false;
         Secured secured = AnnotationUtils.findAnnotation(classToAccess, Secured.class);
         if(secured==null) {
             return true;

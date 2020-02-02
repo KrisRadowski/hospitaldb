@@ -1,4 +1,4 @@
-package pl.utp.kradowski.hospitaldb;
+package pl.utp.kradowski.hospitaldb.view;
 
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;

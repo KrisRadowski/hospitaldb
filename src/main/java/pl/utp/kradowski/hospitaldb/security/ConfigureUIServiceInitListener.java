@@ -5,8 +5,8 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.server.ServiceInitEvent;
 import com.vaadin.flow.server.VaadinServiceInitListener;
 import org.springframework.stereotype.Component;
-import pl.utp.kradowski.hospitaldb.AccessDeniedView;
-import pl.utp.kradowski.hospitaldb.LoginView;
+import pl.utp.kradowski.hospitaldb.view.AccessDeniedView;
+import pl.utp.kradowski.hospitaldb.view.LoginView;
 
 @Component
 public class ConfigureUIServiceInitListener implements VaadinServiceInitListener {

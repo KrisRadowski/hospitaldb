@@ -1,4 +1,4 @@
-package pl.utp.kradowski.hospitaldb;
+package pl.utp.kradowski.hospitaldb.form;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -14,7 +14,6 @@ import pl.utp.kradowski.hospitaldb.service.HospitalDBUserService;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 
 @Route(RegisterForm.ROUTE)

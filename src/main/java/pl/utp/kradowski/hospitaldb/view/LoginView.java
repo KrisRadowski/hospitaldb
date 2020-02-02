@@ -1,8 +1,7 @@
-package pl.utp.kradowski.hospitaldb;
+package pl.utp.kradowski.hospitaldb.view;
 
 
 import com.vaadin.flow.component.Tag;
-import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.login.LoginForm;
@@ -18,8 +17,6 @@ import pl.utp.kradowski.hospitaldb.entity.Position;
 import pl.utp.kradowski.hospitaldb.repository.HospitalDBUserRepository;
 import pl.utp.kradowski.hospitaldb.security.UserRole;
 import pl.utp.kradowski.hospitaldb.service.HospitalDBUserService;
-
-import java.util.Collections;
 
 @Tag("sa-login-view")
 @Route(value = LoginView.ROUTE)
@@ -52,10 +49,6 @@ public class LoginView extends VerticalLayout implements BeforeEnterListener {
 
     @Override
     public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
-        /*System.out.println(beforeEnterEvent.getLocation().getQueryParameters().getParameters());
-        if(!beforeEnterEvent.getLocation().getQueryParameters().getParameters().getOrDefault("error", Collections.emptyList()).isEmpty()) {
-            login.setError(true);
-        }*/
         login.setError(beforeEnterEvent.getLocation().getQueryParameters().getParameters().containsKey("error"));
     }
 
