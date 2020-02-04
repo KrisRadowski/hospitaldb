@@ -3,6 +3,7 @@ package pl.utp.kradowski.hospitaldb.form;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
@@ -11,10 +12,8 @@ import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import pl.utp.kradowski.hospitaldb.entity.Department;
-import pl.utp.kradowski.hospitaldb.entity.Hospital;
 import pl.utp.kradowski.hospitaldb.repository.HospitalRepository;
 import pl.utp.kradowski.hospitaldb.service.DepartmentService;
-
 
 import java.util.List;
 
@@ -31,17 +30,19 @@ public class AddDepartmentForm extends VerticalLayout {
         Button addDepartment = new Button("Add department");
         Binder<Department> departmentBinder = new Binder<>(Department.class);
         departmentBinder.forField(deptName)
-                .asRequired("Department name needed").bind(Department::getDeptName,Department::setDeptName);
+                .asRequired("Department name needed").bind(null,Department::setDeptName);
         Department d = new Department();
         addDepartment.addClickListener(click->{
+            Exception ex=null;
             try {
                 departmentBinder.writeBean(d);
                 d.setHospital(hospitalRepository.findByHospitalName(hospital.getValue()));
                 departmentService.addDepartment(d);
             } catch (ValidationException e) {
-                e.printStackTrace();
+                ex=e;
             }
-            UI.getCurrent().getPage().setLocation("/admin");
+            if(ex==null)
+                UI.getCurrent().getPage().setLocation("/admin");
         });
         add(hospital,deptName,addDepartment);
     }

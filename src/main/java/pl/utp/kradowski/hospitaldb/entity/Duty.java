@@ -19,6 +19,9 @@ public class Duty {
     @JoinColumn(name="team_id",nullable = false)
     private Team team;
 
+    @Column(nullable = false)
+    private boolean needsConfirmation;
+
     public Duty() {
 
     }
@@ -28,6 +31,7 @@ public class Duty {
         this.startTime = startTime;
         this.endTime = endTime;
         this.team = team;
+        this.needsConfirmation=false;
     }
 
     public Department getDept() {
@@ -60,5 +64,13 @@ public class Duty {
 
     public void setTeam(Team team) {
         this.team = team;
+    }
+
+    public boolean isNeedsConfirmation() {
+        return needsConfirmation;
+    }
+
+    public void setNeedsConfirmation(boolean needsConfirmation) {
+        this.needsConfirmation = needsConfirmation;
     }
 }

@@ -2,6 +2,7 @@ package pl.utp.kradowski.hospitaldb.form;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.TextField;
@@ -53,13 +54,15 @@ public class AddHospitalForm extends VerticalLayout {
                 .withValidator(new EmailValidator("It's not a valid e-mail address"))
                 .bind(Hospital::getEmailAddress,Hospital::setEmailAddress);
         addHospital.addClickListener(click->{
+            Exception ex=null;
             try {
                 hospitalBinder.writeBean(h);
                 hospitalService.addHospital(h);
             } catch (ValidationException e) {
-                e.printStackTrace();
+                ex=e;
             }
-            UI.getCurrent().getPage().setLocation("/admin"); //todo: make redirects only if everything is valid
+            if(ex==null)
+                UI.getCurrent().getPage().setLocation("/admin");
         });
         add(
                 hospitalName,

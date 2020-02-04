@@ -10,7 +10,7 @@ public class HospitalEmployee {
     private Long id;
     @Column(nullable = false)
     private String firstName, lastName;
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "user_id")
     private HospitalDBUser hospitalDBUser;
     @Column(nullable = false)
@@ -43,7 +43,7 @@ public class HospitalEmployee {
         this.lastName = lastName;
     }
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.MERGE)
     public HospitalDBUser getHospitalDBUser() {
         return hospitalDBUser;
     }
