@@ -53,11 +53,13 @@ public class RegisterForm extends VerticalLayout {
         add(position);
         Button registerButton = new Button("Register");
         HospitalDBUser user = new HospitalDBUser();
+        HospitalEmployee employee = new HospitalEmployee();
         registerButton.addClickListener(click->{
             Exception ex=null;
             try {
                 hospitalDBUserBinder.writeBean(user);
                 user.setRole(UserRole.ROLE_USER);
+                employeeBinder.writeBean(employee);
                 DBUserservice.addUser(firstName.getValue(),lastName.getValue(),user,chosenPosition[0]);
             } catch (Exception e){
                 ex=e;
