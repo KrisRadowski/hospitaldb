@@ -15,6 +15,8 @@ import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.material.Material;
 import org.springframework.stereotype.Component;
 import pl.utp.kradowski.hospitaldb.controller.LoggedUserProperties;
+import pl.utp.kradowski.hospitaldb.form.AddDepartmentForm;
+import pl.utp.kradowski.hospitaldb.form.AddHospitalForm;
 
 @Push
 @Viewport("width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes")
@@ -26,7 +28,11 @@ public class ApplicationViewport extends AppLayoutRouterLayout<TopLayouts.Top> {
         if(userProperties.currentUsersGroup().equals("ROLE_ADMIN")){
             init(AppLayoutBuilder.get(TopLayouts.Top.class)
                     .withAppMenu(TopAppMenuBuilder.get()
-                            .add(new TopClickableItem("Sign out", VaadinIcon.EXIT.create(),
+                            .add(new TopClickableItem("Add Hospital",VaadinIcon.PLUS.create(),
+                                            click->UI.getCurrent().getPage().setLocation("addHospital")),
+                                    new TopClickableItem("Add Department",VaadinIcon.PLUS.create(),
+                                            click->UI.getCurrent().getPage().setLocation("addDepartment")),
+                                    new TopClickableItem("Sign out", VaadinIcon.EXIT.create(),
                                     click -> UI.getCurrent().getPage().setLocation("logout")))
                             .build())
                     .build());
@@ -34,7 +40,9 @@ public class ApplicationViewport extends AppLayoutRouterLayout<TopLayouts.Top> {
         if(userProperties.currentUsersGroup().equals("ROLE_USER")){
             init(AppLayoutBuilder.get(TopLayouts.Top.class)
                     .withAppMenu(TopAppMenuBuilder.get()
-                            .add(new TopClickableItem("Sign out", VaadinIcon.EXIT.create(),
+                            .add(new TopClickableItem("Create team",VaadinIcon.PLUS.create(),
+                                            click -> UI.getCurrent().getPage().setLocation("createTeam"))
+                                    ,new TopClickableItem("Sign out", VaadinIcon.EXIT.create(),
                                     click -> UI.getCurrent().getPage().setLocation("logout")))
                             .build())
                     .build());

@@ -1,8 +1,9 @@
 package pl.utp.kradowski.hospitaldb.form;
 
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.TextField;
@@ -14,8 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import pl.utp.kradowski.hospitaldb.entity.Hospital;
 import pl.utp.kradowski.hospitaldb.service.HospitalService;
+import pl.utp.kradowski.hospitaldb.view.ApplicationViewport;
 
-@Route(value = "addHospital")
+@Route(value = "addHospital",layout = ApplicationViewport.class)
 @Secured("ROLE_ADMIN")
 public class AddHospitalForm extends VerticalLayout {
 
@@ -30,6 +32,7 @@ public class AddHospitalForm extends VerticalLayout {
         TextField phoneNumber = new TextField("Phone number:");
         EmailField emailAddress = new EmailField("E-mail address:");
         Button addHospital = new Button("Add hospital");
+        Button goBack = new Button("Back");
         Hospital h = new Hospital();
         hospitalBinder.forField(hospitalName)
                 .asRequired("Hospital name needed").bind(Hospital::getHospitalName,Hospital::setHospitalName);
@@ -64,6 +67,7 @@ public class AddHospitalForm extends VerticalLayout {
             if(ex==null)
                 UI.getCurrent().getPage().setLocation("/admin");
         });
+        goBack.addClickListener(click-> UI.getCurrent().getPage().setLocation("/admin"));
         add(
                 hospitalName,
                 street,
@@ -72,7 +76,7 @@ public class AddHospitalForm extends VerticalLayout {
                 zipCode,
                 phoneNumber,
                 emailAddress,
-                addHospital
+                new HorizontalLayout(addHospital,goBack)
         );
     }
 }

@@ -11,13 +11,14 @@ import java.util.Collection;
 public class LoggedUserProperties {
 
     public String currentUsersGroup() {
-        /*Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Collection<? extends GrantedAuthority> grantedAuthorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+        return new ArrayList(grantedAuthorities).get(0).toString();
+    }
+
+    public String currentUser(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if(!(auth instanceof AnonymousAuthenticationToken))
             return auth.getName();
-        else return "";*/
-
-        Collection<? extends GrantedAuthority> grantedAuthorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
-        System.out.println(new ArrayList(grantedAuthorities).get(0));
-        return new ArrayList(grantedAuthorities).get(0).toString();
+        else return "";
     }
 }

@@ -20,7 +20,10 @@ public class Duty {
     private Team team;
 
     @Column(nullable = false)
-    private boolean needsConfirmation;
+    private DutyType dutyType;
+
+    @Column(nullable = false)
+    private boolean confirmed;
 
     public Duty() {
 
@@ -31,7 +34,7 @@ public class Duty {
         this.startTime = startTime;
         this.endTime = endTime;
         this.team = team;
-        this.needsConfirmation=false;
+        this.confirmed =false;
     }
 
     public Department getDept() {
@@ -66,11 +69,19 @@ public class Duty {
         this.team = team;
     }
 
-    public boolean isNeedsConfirmation() {
-        return needsConfirmation;
+    public boolean isConfirmed() {
+        return confirmed;
     }
 
-    public void setNeedsConfirmation(boolean needsConfirmation) {
-        this.needsConfirmation = needsConfirmation;
+    public void setConfirmed(boolean needsConfirmation) {
+        this.confirmed = needsConfirmation;
+    }
+
+    public DutyType getDutyType() {
+        return dutyType;
+    }
+
+    public void setDutyType(DutyType dutyType) {
+        this.dutyType = dutyType;
     }
 }

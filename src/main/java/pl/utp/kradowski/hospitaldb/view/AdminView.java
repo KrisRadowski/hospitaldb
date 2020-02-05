@@ -7,7 +7,7 @@ import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 
-@Route(value = "admin")
+@Route(value = "admin",layout = ApplicationViewport.class)
 @Secured("ROLE_ADMIN")
 public class AdminView extends HorizontalLayout {
     Button addHospital = new Button("Add Hospital");
@@ -15,12 +15,6 @@ public class AdminView extends HorizontalLayout {
 
     @Autowired
     public AdminView(){
-        addHospital.addClickListener(click->{
-            UI.getCurrent().getPage().setLocation("addHospital");
-        });
-        addDepartment.addClickListener(click->{
-            UI.getCurrent().getPage().setLocation("addDepartment");
-        });
-        add(addHospital,addDepartment);
+
     }
 }
