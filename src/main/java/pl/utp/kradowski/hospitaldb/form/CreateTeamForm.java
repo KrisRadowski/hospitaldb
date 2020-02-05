@@ -33,7 +33,8 @@ public class CreateTeamForm extends VerticalLayout {
     }
 
     private void fillComboBox(HospitalEmployeeRepository employeeRepository, ComboBox comboBox) {
-        List<String> employeeNames = employeeRepository.listEmployees(userProperties.currentUser());
+        List<String> employeeNames = //employeeRepository.listEmployees();
+        employeeRepository.listEmployees(userProperties.currentUser());
         comboBox.setItems(employeeNames);
     }
 }
