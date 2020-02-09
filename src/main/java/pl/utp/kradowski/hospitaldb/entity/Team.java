@@ -9,7 +9,7 @@ public class Team {
     @Column(name= "team_id")
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "employee_id")
     private HospitalEmployee teamLeader;
     private Long teamEmployee1;
