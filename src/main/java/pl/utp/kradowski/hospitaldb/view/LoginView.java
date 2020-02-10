@@ -39,6 +39,7 @@ public class LoginView extends VerticalLayout implements BeforeEnterListener {
             });
             add(magicButton);
         }
+        setAlignItems(Alignment.CENTER);
     }
 
     @Override

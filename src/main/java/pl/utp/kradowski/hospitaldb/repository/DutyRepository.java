@@ -39,4 +39,8 @@ public interface DutyRepository extends JpaRepository<Duty,Long> {
     @Modifying
     @Query("Update Duty d set d.confirmed=true where d.id = ?1")
     void setDutyAsConfirmed(long dutyId);
+
+    @Query(value = "Select * from duty d where d.team_id=(" +
+            "select team.team_id from team where team.employee_id=?1 or team.team_employee1=?1 or team.team_employee2=?1)",nativeQuery = true)
+    List<Duty> getAllDutiesToDo(long employeeID);
 }

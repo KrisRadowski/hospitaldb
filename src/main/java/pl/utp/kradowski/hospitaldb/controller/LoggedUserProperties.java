@@ -9,6 +9,7 @@ import pl.utp.kradowski.hospitaldb.repository.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class LoggedUserProperties {
 
@@ -26,6 +27,11 @@ public class LoggedUserProperties {
     public LoggedUserProperties(HospitalEmployeeRepository r,TeamRepository t){
         this.repository = r;
         this.teamRepository = t;
+    }
+
+    public LoggedUserProperties(HospitalEmployeeRepository r,DutyRepository d){
+        this.repository = r;
+        this.dutyRepository = d;
     }
 
     public LoggedUserProperties(HospitalEmployeeRepository r, TeamRepository t, DutyRepository d){
@@ -80,6 +86,10 @@ public class LoggedUserProperties {
         if(userIsTeamLeader()){
             return dutyRepository.hasUnconfirmedDuties(auth.getName());
         } else return false;
+    }
+
+    public List<Duty> getAllDuties(){
+        return dutyRepository.getAllDutiesToDo(currentUserAsEmployeeEntity().getId());
     }
 
     public long unconfirmedDuty(){

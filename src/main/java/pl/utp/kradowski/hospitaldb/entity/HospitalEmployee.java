@@ -27,6 +27,10 @@ public class HospitalEmployee {
         this.position = p;
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public String getFirstName() {
         return firstName;
     }

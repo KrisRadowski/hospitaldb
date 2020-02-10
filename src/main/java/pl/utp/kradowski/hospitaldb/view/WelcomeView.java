@@ -12,19 +12,22 @@ import org.vaadin.stefan.fullcalendar.Entry;
 import org.vaadin.stefan.fullcalendar.FullCalendar;
 import org.vaadin.stefan.fullcalendar.FullCalendarBuilder;
 import pl.utp.kradowski.hospitaldb.controller.LoggedUserProperties;
-
+import pl.utp.kradowski.hospitaldb.entity.Duty;
+import pl.utp.kradowski.hospitaldb.repository.DutyRepository;
+import pl.utp.kradowski.hospitaldb.repository.HospitalEmployeeRepository;
 
 
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 @Route(value = WelcomeView.ROUTE, layout = ApplicationViewport.class)
 public class WelcomeView extends VerticalLayout {
     public static final String ROUTE = "welcome";
 
-
     @Autowired
-    public WelcomeView(){
-        LoggedUserProperties userProperties = new LoggedUserProperties();
+    public WelcomeView(HospitalEmployeeRepository hospitalEmployeeRepository, DutyRepository dutyRepository){
+        LoggedUserProperties userProperties = new LoggedUserProperties(hospitalEmployeeRepository,dutyRepository);
         if(userProperties.currentUsersGroup().equals("ROLE_ADMIN")){
             UI.getCurrent().getPage().setLocation("admin");
         } else {
@@ -41,9 +44,24 @@ public class WelcomeView extends VerticalLayout {
             fwd1M.addClickListener(click -> {
                 calendar.next();
             });
-            Entry[] entries = MakeEntries()
-            calendar.addEntries();
+            List<Entry> entries = MakeEntries(userProperties.getAllDuties());
+            calendar.addEntries(entries);
             add(currentMonth,calendar,new HorizontalLayout(back1M,fwd1M));
         }
+    }
+
+    private List<Entry> MakeEntries(List<Duty> allDuties) {
+        List<Entry> out = new ArrayList<>();
+        for(int i=0;i<allDuties.size();i++){
+            Entry e= new Entry();
+            String desc = allDuties.get(i).getDept().getDeptName()+
+                    " at "+allDuties.get(i).getDept().getHospital().getHospitalName()+
+                    " - "+allDuties.get(i).getDutyType().name();
+            e.setTitle(desc);
+            e.setStart(allDuties.get(i).getStartTime().toInstant());
+            e.setEnd(allDuties.get(i).getEndTime().toInstant());
+            out.add(e);
+        }
+        return out;
     }
 }
