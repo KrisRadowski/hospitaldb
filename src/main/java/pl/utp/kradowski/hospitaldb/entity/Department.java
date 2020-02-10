@@ -23,6 +23,10 @@ public class Department {
         this.deptName = deptName;
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public Hospital getHospital() {
         return hospital;
     }

@@ -22,10 +22,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.utp.kradowski.hospitaldb.controller.LoggedUserProperties;
 import pl.utp.kradowski.hospitaldb.entity.Duty;
+import pl.utp.kradowski.hospitaldb.entity.UnconfirmedDuties;
 import pl.utp.kradowski.hospitaldb.repository.DutyRepository;
 import pl.utp.kradowski.hospitaldb.repository.HospitalEmployeeRepository;
 import pl.utp.kradowski.hospitaldb.repository.TeamRepository;
+import pl.utp.kradowski.hospitaldb.repository.UnconfirmedDutiesRepository;
 import pl.utp.kradowski.hospitaldb.service.TeamService;
+import pl.utp.kradowski.hospitaldb.service.UnconfirmedDutiesService;
+
+import java.text.SimpleDateFormat;
 
 import static com.github.appreciated.app.layout.entity.Section.FOOTER;
 
@@ -34,9 +39,12 @@ import static com.github.appreciated.app.layout.entity.Section.FOOTER;
 @Theme(Material.class)
 @Component @UIScope
 public class ApplicationViewport extends AppLayoutRouterLayout<TopLayouts.Top> {
+    DutyRepository d;
     @Autowired
-    public ApplicationViewport(HospitalEmployeeRepository employeeRepository, TeamRepository teamRepository, DutyRepository dutyRepository,TeamService teamService){
+    public ApplicationViewport(HospitalEmployeeRepository employeeRepository, TeamRepository teamRepository,
+                               DutyRepository dutyRepository, UnconfirmedDutiesRepository u,TeamService teamService){
         LoggedUserProperties userProperties = new LoggedUserProperties(employeeRepository,teamRepository,dutyRepository);
+        this.d=dutyRepository;
         if(userProperties.currentUsersGroup().equals("ROLE_ADMIN")){
             init(AppLayoutBuilder.get(TopLayouts.Top.class)
                     .withAppMenu(TopAppMenuBuilder.get()
@@ -71,25 +79,34 @@ public class ApplicationViewport extends AppLayoutRouterLayout<TopLayouts.Top> {
                 n.setPosition(Notification.Position.MIDDLE);
 
                 Label confirmationLabel = new Label();
-                Button confirmReplace = new Button("Yes");
-                Button cancelReplace = new Button("no");
+                Button confirmReplace = new Button("Confirm");
+                Button cancelReplace = new Button("Refuse");
                 Notification dutyConfirmation = new Notification(confirmationLabel,confirmReplace,cancelReplace);
                 dutyConfirmation.setPosition(Notification.Position.MIDDLE);
                 Icon bell = new Icon(VaadinIcon.BELL);
                 ComponentEventListener<ClickEvent<?>> bellClickEvent = (ComponentEventListener<ClickEvent<?>>) clickEvent -> {};
-                if(userProperties.unConfirmedDuties()){
+                if(userProperties.userHasUnconfirmedDuties()){
                     bell.setColor("red");
                     bellClickEvent = clickEvent -> dutyConfirmation.open();
-                    Duty dutyToConfirmation = userProperties.getUnconfirmedDuty();
-                    Duty otherSideDuty = dutyRepository.getOtherSideDuty(dutyToConfirmation);
-                    confirmationLabel.setText("want to replace duty "+" for ");
+                    UnconfirmedDuties unconfirmedDuties = u.getByDuty2(userProperties.unconfirmedDuty());
+                    Duty duty1 = dutyRepository.getDutyById(unconfirmedDuties.getDuty1());
+                    Duty duty2 = dutyRepository.getDutyById(unconfirmedDuties.getDuty2());
+                    String name = duty1.getTeam().getTeamLeader().getFirstName()+" "+
+                            duty1.getTeam().getTeamLeader().getLastName();
+                    String duty1Details = DutyDetails(duty1);
+                    String duty2Details = DutyDetails(duty2);
+                    confirmationLabel.setText(name + " want to replace duty "+duty1Details+" for duty "+duty2Details);
                     confirmReplace.addClickListener(click ->{
                         dutyConfirmation.close();
-                        //replaceDuties();
+                        replaceDuties(duty1,duty2);
+                        u.delete(unconfirmedDuties);
+                        UI.getCurrent().getPage().reload();
                     });
                     cancelReplace.addClickListener(click -> {
                         dutyConfirmation.close();
-                        //deleteDutiesToReplace();
+                        deleteDutiesToReplace(duty1,duty2);
+                        u.delete(unconfirmedDuties);
+                        UI.getCurrent().getPage().reload();
                     });
                 }
                 TopClickableItem bellItem = new TopClickableItem("",bell,bellClickEvent);
@@ -115,5 +132,26 @@ public class ApplicationViewport extends AppLayoutRouterLayout<TopLayouts.Top> {
                         .build());
             }
         }
+    }
+
+    private void replaceDuties(Duty duty1, Duty duty2) {
+        d.setDutyAsConfirmed(duty1.getId());
+        d.setDutyAsConfirmed(duty2.getId());
+        Duty[] dutiesToDeletion = new Duty[2];
+        dutiesToDeletion[0]=d.getDuty(duty1.getStartTime(),duty1.getEndTime(),duty2.getTeam().getId(),duty1.getDept().getId());
+        dutiesToDeletion[1]=d.getDuty(duty2.getStartTime(),duty2.getEndTime(),duty1.getTeam().getId(),duty2.getDept().getId());
+        d.delete(dutiesToDeletion[0]);
+        d.delete(dutiesToDeletion[1]);
+    }
+
+    private void deleteDutiesToReplace(Duty duty1, Duty duty2) {
+        d.delete(duty1);
+        d.delete(duty2);
+    }
+
+    private String DutyDetails(Duty duty) {
+        return "from "+new SimpleDateFormat().format(duty.getStartTime())+" to "+
+                new SimpleDateFormat().format(duty.getEndTime())+" at "+
+                duty.getDept().getDeptName()+" in "+duty.getDept().getHospital().getHospitalName();
     }
 }

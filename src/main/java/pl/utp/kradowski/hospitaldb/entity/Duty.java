@@ -9,6 +9,7 @@ public class Duty {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name= "duty_id")
     private Long id;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="dept_id",nullable = false)
     private Department dept;
@@ -83,5 +84,9 @@ public class Duty {
 
     public void setDutyType(DutyType dutyType) {
         this.dutyType = dutyType;
+    }
+
+    public Long getId() {
+        return id;
     }
 }

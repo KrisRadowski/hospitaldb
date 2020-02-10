@@ -11,11 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import pl.utp.kradowski.hospitaldb.controller.LoggedUserProperties;
 import pl.utp.kradowski.hospitaldb.entity.Duty;
+import pl.utp.kradowski.hospitaldb.entity.UnconfirmedDuties;
 import pl.utp.kradowski.hospitaldb.repository.DepartmentRepository;
 import pl.utp.kradowski.hospitaldb.repository.DutyRepository;
 import pl.utp.kradowski.hospitaldb.repository.HospitalEmployeeRepository;
 import pl.utp.kradowski.hospitaldb.repository.TeamRepository;
 import pl.utp.kradowski.hospitaldb.service.DutyService;
+import pl.utp.kradowski.hospitaldb.service.UnconfirmedDutiesService;
 import pl.utp.kradowski.hospitaldb.view.ApplicationViewport;
 
 
@@ -34,7 +36,8 @@ public class ReplaceTeamForm extends VerticalLayout {
 
     @Autowired
     public ReplaceTeamForm(HospitalEmployeeRepository hospitalEmployeeRepository, TeamRepository teamRepository,
-                           DepartmentRepository departmentRepository,DutyRepository dutyRepository, DutyService dutyService){
+                           DepartmentRepository departmentRepository, DutyRepository dutyRepository,
+                           DutyService dutyService, UnconfirmedDutiesService unconfirmedDutiesService){
 
         userProperties= new LoggedUserProperties(hospitalEmployeeRepository,teamRepository);
         List<Duty> dutiesList = dutyRepository.getAllDuties(userProperties.getUsersTeam().getId());
@@ -81,6 +84,11 @@ public class ReplaceTeamForm extends VerticalLayout {
                 newDutyForOtherSide.setEndTime(dutyToBeGiven.getEndTime());
                 dutyService.addDuty(newDuty);
                 dutyService.addDuty(newDutyForOtherSide);
+                UnconfirmedDuties unconfirmedDuties = new UnconfirmedDuties();
+                unconfirmedDuties.setDuty1(newDuty.getId());
+                unconfirmedDuties.setDuty2(newDutyForOtherSide.getId());
+                unconfirmedDutiesService.addPair(unconfirmedDuties);
+
                 UI.getCurrent().getPage().setLocation("welcome");
             }
             else {

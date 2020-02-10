@@ -5,10 +5,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import pl.utp.kradowski.hospitaldb.entity.*;
-import pl.utp.kradowski.hospitaldb.repository.DutyRepository;
-import pl.utp.kradowski.hospitaldb.repository.HospitalDBUserRepository;
-import pl.utp.kradowski.hospitaldb.repository.HospitalEmployeeRepository;
-import pl.utp.kradowski.hospitaldb.repository.TeamRepository;
+import pl.utp.kradowski.hospitaldb.repository.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -79,15 +76,15 @@ public class LoggedUserProperties {
         } else return null;
     }
 
-    public boolean unConfirmedDuties() {
+    public boolean userHasUnconfirmedDuties() {
         if(userIsTeamLeader()){
-            return dutyRepository.unconfirmedDuties(auth.getName());
+            return dutyRepository.hasUnconfirmedDuties(auth.getName());
         } else return false;
     }
 
-    public Duty getUnconfirmedDuty(){
+    public long unconfirmedDuty(){
         if(userIsTeamLeader()){
-            return dutyRepository.getUnconfirmedDuty(auth.getName());
-        } else return null;
+            return dutyRepository.getUnconfirmedDutyId(auth.getName());
+        } else return 0;
     }
 }

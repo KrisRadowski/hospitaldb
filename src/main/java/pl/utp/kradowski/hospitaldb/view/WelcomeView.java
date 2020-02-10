@@ -8,6 +8,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.vaadin.stefan.fullcalendar.Entry;
 import org.vaadin.stefan.fullcalendar.FullCalendar;
 import org.vaadin.stefan.fullcalendar.FullCalendarBuilder;
 import pl.utp.kradowski.hospitaldb.controller.LoggedUserProperties;
@@ -40,6 +41,8 @@ public class WelcomeView extends VerticalLayout {
             fwd1M.addClickListener(click -> {
                 calendar.next();
             });
+            Entry[] entries = MakeEntries()
+            calendar.addEntries();
             add(currentMonth,calendar,new HorizontalLayout(back1M,fwd1M));
         }
     }
