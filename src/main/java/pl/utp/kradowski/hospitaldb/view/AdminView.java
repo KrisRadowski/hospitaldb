@@ -19,6 +19,6 @@ public class AdminView extends VerticalLayout {
         Label usersCount = new Label("Users count: "+u.count());
         Label hospitalsCount = new Label("Hospitals count: "+h.count());
         Label deptsCount = new Label("Departments count: "+d.count());
-
+        add(usersCount,hospitalsCount,deptsCount);
     }
 }
