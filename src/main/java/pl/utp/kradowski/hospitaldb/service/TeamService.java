@@ -17,4 +17,6 @@ public class TeamService {
     public void addTeam(Team t){
         teamRepository.save(t);
     }
+
+    public void deleteTeam(Team t) {teamRepository.delete(t);}
 }

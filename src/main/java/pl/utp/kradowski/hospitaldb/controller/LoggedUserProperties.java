@@ -7,8 +7,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import pl.utp.kradowski.hospitaldb.entity.HospitalDBUser;
 import pl.utp.kradowski.hospitaldb.entity.HospitalEmployee;
 import pl.utp.kradowski.hospitaldb.entity.Position;
+import pl.utp.kradowski.hospitaldb.entity.Team;
 import pl.utp.kradowski.hospitaldb.repository.HospitalDBUserRepository;
 import pl.utp.kradowski.hospitaldb.repository.HospitalEmployeeRepository;
+import pl.utp.kradowski.hospitaldb.repository.TeamRepository;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,12 +18,18 @@ import java.util.Collection;
 public class LoggedUserProperties {
 
     private HospitalEmployeeRepository repository;
+    private TeamRepository teamRepository;
     public LoggedUserProperties(){
 
     }
 
     public LoggedUserProperties(HospitalEmployeeRepository r){
         this.repository = r;
+    }
+
+    public LoggedUserProperties(HospitalEmployeeRepository r,TeamRepository t){
+        this.repository = r;
+        this.teamRepository = t;
     }
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     public String currentUsersGroup() {
@@ -57,5 +65,11 @@ public class LoggedUserProperties {
         if(!(auth instanceof AnonymousAuthenticationToken))
             return repository.employeeIsInTeam(auth.getName());
         else return false;
+    }
+
+    public Team getUsersTeam() {
+        if(userBelongsInTeam()){
+            return teamRepository.getUsersTeam(auth.getName());
+        } else return null;
     }
 }

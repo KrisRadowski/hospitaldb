@@ -4,6 +4,7 @@ import javax.persistence.*;
 
 @Entity
 public class Team {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name= "team_id")
@@ -47,5 +48,9 @@ public class Team {
 
     public void setTeamEmployee2(Long teamEmployee2) {
         this.teamEmployee2 = teamEmployee2;
+    }
+
+    public Long getId() {
+        return id;
     }
 }

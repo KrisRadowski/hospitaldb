@@ -12,7 +12,7 @@ public class Duty {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="dept_id",nullable = false)
     private Department dept;
-    @Column(nullable = false,unique = true)
+    @Column(nullable = false)
     private Date startTime,endTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -73,8 +73,8 @@ public class Duty {
         return confirmed;
     }
 
-    public void setConfirmed(boolean needsConfirmation) {
-        this.confirmed = needsConfirmation;
+    public void setConfirmed(boolean isConfirmed) {
+        this.confirmed = isConfirmed;
     }
 
     public DutyType getDutyType() {

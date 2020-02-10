@@ -16,7 +16,7 @@ import pl.utp.kradowski.hospitaldb.repository.HospitalRepository;
 import pl.utp.kradowski.hospitaldb.service.DepartmentService;
 import pl.utp.kradowski.hospitaldb.view.ApplicationViewport;
 
-import javax.swing.*;
+
 import java.util.List;
 
 

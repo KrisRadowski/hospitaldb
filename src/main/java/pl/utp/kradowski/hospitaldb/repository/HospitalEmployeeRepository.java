@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import pl.utp.kradowski.hospitaldb.entity.HospitalEmployee;
 import pl.utp.kradowski.hospitaldb.entity.Position;
+import pl.utp.kradowski.hospitaldb.entity.Team;
 
 import java.util.List;
 
@@ -17,8 +18,9 @@ public interface HospitalEmployeeRepository extends JpaRepository<HospitalEmploy
             "WHERE  u.user_id = he.user_id AND u.login not like ?1",nativeQuery = true)
     List<String> listEmployees(String userToExclude);
 
-    @Query(value = "SELECT concat(he.first_name,' ',he.last_name,' (',he.employee_id,')') FROM hospital_employee he,HospitalDBUser u " +
-            "WHERE  u.user_id = he.user_id AND u.login not like ?1 AND he.position >= ?2",nativeQuery = true)
+    @Query(value = "SELECT concat(he.first_name,' ',he.last_name,' (',he.employee_id,')') FROM hospital_employee he,HospitalDBUser u,team t " +
+            "WHERE  u.user_id = he.user_id AND u.login not like ?1 AND he.position >= ?2 " +
+            "and he.employee_id!=t.employee_id and he.employee_id!= t.team_employee1 and he.employee_id!=t.team_employee2",nativeQuery = true)
     List<String> listEmployees(String userToExclude, int maximumPosition);
 
     @Query(value = "SELECT he.position FROM hospital_employee he, hospitaldbuser u " +
@@ -50,4 +52,5 @@ public interface HospitalEmployeeRepository extends JpaRepository<HospitalEmploy
             "INNER JOIN hospitaldbuser h on he.user_id = h.user_id " +
             "where h.login like ?1)",nativeQuery = true)
     boolean employeeIsInTeam(String name);
+
 }
