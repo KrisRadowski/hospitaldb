@@ -4,10 +4,8 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import pl.utp.kradowski.hospitaldb.entity.HospitalDBUser;
-import pl.utp.kradowski.hospitaldb.entity.HospitalEmployee;
-import pl.utp.kradowski.hospitaldb.entity.Position;
-import pl.utp.kradowski.hospitaldb.entity.Team;
+import pl.utp.kradowski.hospitaldb.entity.*;
+import pl.utp.kradowski.hospitaldb.repository.DutyRepository;
 import pl.utp.kradowski.hospitaldb.repository.HospitalDBUserRepository;
 import pl.utp.kradowski.hospitaldb.repository.HospitalEmployeeRepository;
 import pl.utp.kradowski.hospitaldb.repository.TeamRepository;
@@ -17,6 +15,7 @@ import java.util.Collection;
 
 public class LoggedUserProperties {
 
+    private DutyRepository dutyRepository;
     private HospitalEmployeeRepository repository;
     private TeamRepository teamRepository;
     public LoggedUserProperties(){
@@ -31,6 +30,13 @@ public class LoggedUserProperties {
         this.repository = r;
         this.teamRepository = t;
     }
+
+    public LoggedUserProperties(HospitalEmployeeRepository r, TeamRepository t, DutyRepository d){
+        this.repository = r;
+        this.teamRepository = t;
+        this.dutyRepository = d;
+    }
+
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     public String currentUsersGroup() {
         Collection<? extends GrantedAuthority> grantedAuthorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
@@ -70,6 +76,18 @@ public class LoggedUserProperties {
     public Team getUsersTeam() {
         if(userBelongsInTeam()){
             return teamRepository.getUsersTeam(auth.getName());
+        } else return null;
+    }
+
+    public boolean unConfirmedDuties() {
+        if(userIsTeamLeader()){
+            return dutyRepository.unconfirmedDuties(auth.getName());
+        } else return false;
+    }
+
+    public Duty getUnconfirmedDuty(){
+        if(userIsTeamLeader()){
+            return dutyRepository.getUnconfirmedDuty(auth.getName());
         } else return null;
     }
 }

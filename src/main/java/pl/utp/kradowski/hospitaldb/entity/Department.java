@@ -9,7 +9,7 @@ public class Department {
     @Column(name= "dept_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="hospital_id",nullable = false)
     private Hospital hospital;
     @Column(nullable = false)

@@ -16,4 +16,9 @@ public interface DepartmentRepository extends JpaRepository<Department,Long> {
             "where d.dept_name like ?1 and h.hospital_name like ?2 "
             ,nativeQuery = true)
     Department getDepartment(String deptname, String hospitalName);
+
+    @Query(value = "SELECT d.dept_id from Department d inner join hospital h on d.hospital_id = h.hospital_id " +
+            "where d.dept_name like ?1 and h.hospital_name like ?2 "
+            ,nativeQuery = true)
+    long getDepartmentId(String deptname, String hospitalName);
 }

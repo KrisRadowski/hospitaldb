@@ -4,12 +4,13 @@ import com.github.appreciated.app.layout.component.applayout.TopLayouts;
 import com.github.appreciated.app.layout.component.builder.AppLayoutBuilder;
 import com.github.appreciated.app.layout.component.menu.top.builder.TopAppMenuBuilder;
 import com.github.appreciated.app.layout.component.menu.top.item.TopClickableItem;
-import com.github.appreciated.app.layout.component.menu.top.item.TopNavigationItem;
 import com.github.appreciated.app.layout.component.router.AppLayoutRouterLayout;
-import com.github.appreciated.app.layout.entity.Section;
+import com.vaadin.flow.component.ClickEvent;
+import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.page.Push;
@@ -20,6 +21,8 @@ import com.vaadin.flow.theme.material.Material;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.utp.kradowski.hospitaldb.controller.LoggedUserProperties;
+import pl.utp.kradowski.hospitaldb.entity.Duty;
+import pl.utp.kradowski.hospitaldb.repository.DutyRepository;
 import pl.utp.kradowski.hospitaldb.repository.HospitalEmployeeRepository;
 import pl.utp.kradowski.hospitaldb.repository.TeamRepository;
 import pl.utp.kradowski.hospitaldb.service.TeamService;
@@ -32,8 +35,8 @@ import static com.github.appreciated.app.layout.entity.Section.FOOTER;
 @Component @UIScope
 public class ApplicationViewport extends AppLayoutRouterLayout<TopLayouts.Top> {
     @Autowired
-    public ApplicationViewport(HospitalEmployeeRepository employeeRepository, TeamRepository teamRepository, TeamService teamService){
-        LoggedUserProperties userProperties = new LoggedUserProperties(employeeRepository);
+    public ApplicationViewport(HospitalEmployeeRepository employeeRepository, TeamRepository teamRepository, DutyRepository dutyRepository,TeamService teamService){
+        LoggedUserProperties userProperties = new LoggedUserProperties(employeeRepository,teamRepository,dutyRepository);
         if(userProperties.currentUsersGroup().equals("ROLE_ADMIN")){
             init(AppLayoutBuilder.get(TopLayouts.Top.class)
                     .withAppMenu(TopAppMenuBuilder.get()
@@ -41,7 +44,7 @@ public class ApplicationViewport extends AppLayoutRouterLayout<TopLayouts.Top> {
                                             click->UI.getCurrent().getPage().setLocation("addHospital")),
                                     new TopClickableItem("Add Department",VaadinIcon.PLUS.create(),
                                             click->UI.getCurrent().getPage().setLocation("addDepartment")),
-                                    new TopClickableItem("Sign out", VaadinIcon.EXIT.create(),
+                                    new TopClickableItem("", VaadinIcon.EXIT.create(),
                                     click -> UI.getCurrent().getPage().setLocation("logout")))
                             .build())
                     .build());
@@ -52,36 +55,61 @@ public class ApplicationViewport extends AppLayoutRouterLayout<TopLayouts.Top> {
                     .withAppMenu(TopAppMenuBuilder.get()
                             .add(new TopClickableItem("Create team",VaadinIcon.PLUS.create(),
                                     click -> UI.getCurrent().getPage().setLocation("createTeam")))
-                            .addToSection(FOOTER, new TopClickableItem("Sign out", VaadinIcon.EXIT.create(),
+                            .addToSection(FOOTER, new TopClickableItem("", VaadinIcon.EXIT.create(),
                                     click -> UI.getCurrent().getPage().setLocation("logout")))
                             .build())
                     .build());
             else if(userProperties.userIsTeamLeader()){
                 Button confirmDeletion = new Button("Yes");
-                Button cancel = new Button("no");
+                Button cancelDeletion = new Button("no");
                 confirmDeletion.addClickListener(click -> {
                     teamService.deleteTeam(userProperties.getUsersTeam());
                     UI.getCurrent().getPage().setLocation("welcome");
                 });
-                Notification n = new Notification(new Label("Are you sure to delete your team?"),confirmDeletion,cancel);
-                cancel.addClickListener(click ->n.close());
+                Notification n = new Notification(new Label("Are you sure to delete your team?"),confirmDeletion,cancelDeletion);
+                cancelDeletion.addClickListener(click ->n.close());
                 n.setPosition(Notification.Position.MIDDLE);
+
+                Label confirmationLabel = new Label();
+                Button confirmReplace = new Button("Yes");
+                Button cancelReplace = new Button("no");
+                Notification dutyConfirmation = new Notification(confirmationLabel,confirmReplace,cancelReplace);
+                dutyConfirmation.setPosition(Notification.Position.MIDDLE);
+                Icon bell = new Icon(VaadinIcon.BELL);
+                ComponentEventListener<ClickEvent<?>> bellClickEvent = (ComponentEventListener<ClickEvent<?>>) clickEvent -> {};
+                if(userProperties.unConfirmedDuties()){
+                    bell.setColor("red");
+                    bellClickEvent = clickEvent -> dutyConfirmation.open();
+                    Duty dutyToConfirmation = userProperties.getUnconfirmedDuty();
+                    Duty otherSideDuty = dutyRepository.getOtherSideDuty(dutyToConfirmation);
+                    confirmationLabel.setText("want to replace duty "+" for ");
+                    confirmReplace.addClickListener(click ->{
+                        dutyConfirmation.close();
+                        //replaceDuties();
+                    });
+                    cancelReplace.addClickListener(click -> {
+                        dutyConfirmation.close();
+                        //deleteDutiesToReplace();
+                    });
+                }
+                TopClickableItem bellItem = new TopClickableItem("",bell,bellClickEvent);
                 init(AppLayoutBuilder.get(TopLayouts.Top.class)
                         .withAppMenu(TopAppMenuBuilder.get()
                                 .add(new TopClickableItem("Report for Duty",VaadinIcon.PLUS.create(),
                                         click -> UI.getCurrent().getPage().setLocation("newDuty")))
                                 .add(new TopClickableItem("Replace Team",VaadinIcon.REFRESH.create(),
                                         clickEvent -> UI.getCurrent().getPage().setLocation("replaceTeam")))
-                                .addToSection(FOOTER, new TopClickableItem("Delete team", VaadinIcon.DEL.create(),
+                                .add(new TopClickableItem("Delete team", VaadinIcon.DEL.create(),
                                         click -> n.open()))
-                                .addToSection(FOOTER, new TopClickableItem("Sign out", VaadinIcon.EXIT.create(),
+                                .addToSection(FOOTER,bellItem)
+                                .addToSection(FOOTER, new TopClickableItem("", VaadinIcon.EXIT.create(),
                                         click -> UI.getCurrent().getPage().setLocation("logout")))
                                 .build())
                         .build());
             } else {
                 init(AppLayoutBuilder.get(TopLayouts.Top.class)
                         .withAppMenu(TopAppMenuBuilder.get()
-                                .addToSection(FOOTER, new TopClickableItem("Sign out", VaadinIcon.EXIT.create(),
+                                .addToSection(FOOTER, new TopClickableItem("", VaadinIcon.EXIT.create(),
                                         click -> UI.getCurrent().getPage().setLocation("logout")))
                                 .build())
                         .build());

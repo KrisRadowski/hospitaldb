@@ -9,13 +9,13 @@ public class Duty {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name= "duty_id")
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="dept_id",nullable = false)
     private Department dept;
     @Column(nullable = false)
     private Date startTime,endTime;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="team_id",nullable = false)
     private Team team;
 
